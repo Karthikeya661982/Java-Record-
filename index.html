@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Java Lab Notebook — M. Karthikeya</title>
+<style>
+:root{--bg:#f6f0e4;--ink:#2a2118;--card:#fffaf0;--acc:#d9531e;--mut:#7a6a58;--line:#e2d6bf;--code:#1f1b16}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1814;--ink:#f1e8d8;--card:#27211b;--mut:#a89883;--line:#3a3128}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Georgia,serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 5vw;border-bottom:2px solid var(--ink);position:sticky;top:0;background:var(--bg);z-index:5}
+header a{color:var(--ink);text-decoration:none;font-weight:bold}.logo span{color:var(--acc)}
+main{max-width:1000px;margin:auto;padding:30px 5vw 60px}
+.hero{display:grid;grid-template-columns:1fr 280px;gap:30px;align-items:center}
+.hero h1{font-size:clamp(2rem,6vw,3.6rem);line-height:1.1;margin:0 0 12px}.hero h1 em{color:var(--acc)}
+.hero p{color:var(--mut)}
+.id{background:var(--card);border:2px solid var(--ink);box-shadow:8px 8px 0 var(--acc);padding:18px;text-align:center}
+.id img{width:150px;height:150px;object-fit:cover;object-position:center 30%;border-radius:50%;border:3px solid var(--ink);background:var(--line)}
+.id h3{margin:10px 0 2px}.id table{width:100%;font-size:.9rem;text-align:left;margin-top:8px;border-collapse:collapse}
+.id td{padding:3px 0;border-top:1px dashed var(--line)}.id td:first-child{color:var(--mut)}
+h2{border-bottom:2px solid var(--ink);padding-bottom:6px;margin-top:40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.wk{background:var(--card);border:2px solid var(--ink);padding:14px;text-decoration:none;color:var(--ink);transition:.15s}
+.wk:hover{transform:translate(-3px,-3px);box-shadow:5px 5px 0 var(--acc)}
+.wk b{font-size:1.6rem;color:var(--acc);display:block}.wk small{color:var(--mut)}
+.plist a{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acc);padding:10px 14px;margin:8px 0;text-decoration:none;color:var(--ink)}
+.plist a:hover{background:var(--line)}.plist i{color:var(--acc);font-style:normal;font-weight:bold;min-width:34px}
+pre{background:var(--code);color:#f3e6c9;padding:16px;overflow:auto;border-radius:6px;font:14px/1.5 Consolas,monospace}
+.out{border-left:5px solid #3a9d5d}.lbl{font:bold .75rem sans-serif;letter-spacing:.1em;color:var(--acc);margin:18px 0 6px}
+table.cmp{border-collapse:collapse;width:100%;font-size:.88rem;display:block;overflow-x:auto}
+.cmp th,.cmp td{border:1px solid var(--ink);padding:8px;text-align:left;vertical-align:top}.cmp th{background:var(--acc);color:#fff}
+.nav{display:flex;justify-content:space-between;margin-top:30px}.nav a,.btn{border:2px solid var(--ink);padding:6px 14px;color:var(--ink);text-decoration:none;background:var(--card)}
+.crumb{color:var(--mut);font-size:.9rem}.crumb a{color:var(--acc)}.pend{color:var(--mut);font-style:italic}
+ol li{margin:6px 0}
+@media(max-width:700px){.hero{grid-template-columns:1fr}}
+</style></head><body>
+<header><a href="#/" class="logo">&lt;java<span>/</span>notebook&gt;</a><a href="#/">Home</a></header>
+<main id="app"></main>
+<script>
+const r=String.raw;
+const P=(t,c,o)=>({t,c,o}); // program
+const W={
+1:{name:"Comparative Table",sub:"Java, C, C++, Python & JavaScript",table:{
+h:["Feature","Java","C","C++","Python","JavaScript"],
+r:[["Paradigm","Object-oriented","Procedural","Procedural + OOP","Multi-paradigm","Multi-paradigm, event-driven"],
+["Execution","Compiled to bytecode, run on JVM","Compiled to machine code","Compiled to machine code","Interpreted","Interpreted / JIT"],
+["Typing","Static, strong","Static, weak","Static","Dynamic, strong","Dynamic, weak"],
+["Memory","Automatic (garbage collector)","Manual","Manual (RAII)","Automatic (GC)","Automatic (GC)"],
+["Platform independent","Yes (WORA)","No","No","Yes (interpreter)","Yes (browser/Node)"],
+["Pointers","No","Yes","Yes","No","No"],
+["Multiple inheritance","Via interfaces","N/A","Yes","Yes","No (prototypes/mixins)"],
+["Speed","Fast","Fastest","Fastest","Slow","Moderate"],
+["Typical use","Enterprise, Android, backend","OS, embedded","Games, systems","AI/ML, scripting","Web front-end & back-end"],
+["File extension",".java / .class",".c",".cpp",".py",".js"]]}},
+2:{name:"JDK Installation",sub:"Oracle JDK & OpenJDK on Windows",steps:[
+["Program 1: Oracle JDK Installation — Windows",["Open oracle.com/java/technologies/downloads and choose the Windows tab.","Download the x64 Installer (.exe) of the latest JDK.","Double-click the installer and click Next.","Keep the default folder (C:\\Program Files\\Java\\jdk-xx) and click Next, then Close.","Open Environment Variables → System variables → New: JAVA_HOME = JDK folder path.","Edit Path and add %JAVA_HOME%\\bin.","Open Command Prompt and run java -version and javac -version to verify."]],
+["Program 2: OpenJDK Installation — Windows",["Open jdk.java.net (or adoptium.net) and download the Windows x64 ZIP/MSI.","Extract the ZIP to C:\\Java\\openjdk (MSI users run the installer instead).","Set JAVA_HOME to the extracted folder.","Add %JAVA_HOME%\\bin to the Path variable.","Restart Command Prompt and run java -version.","Output shows: openjdk version \"xx\" — installation successful."]]]},
+3:{name:"Java Basics",sub:"Data types, operators, conversions, loops",progs:[
+P("Hello, Java! — basic structure",r`public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, Java!");
+    }
+}`,"Hello, Java!"),
+P("All primitive data types",r`public class Main {
+    public static void main(String[] args) {
+        byte b = 100; short s = 30000; int i = 2000000;
+        long l = 9000000000L; float f = 3.14f;
+        double d = 2.718281828; char c = 'J'; boolean flag = true;
+        System.out.println("byte: " + b);
+        System.out.println("short: " + s);
+        System.out.println("int: " + i);
+        System.out.println("long: " + l);
+        System.out.println("float: " + f);
+        System.out.println("double: " + d);
+        System.out.println("char: " + c);
+        System.out.println("boolean: " + flag);
+    }
+}`,`byte: 100
+short: 30000
+int: 2000000
+long: 9000000000
+float: 3.14
+double: 2.718281828
+char: J
+boolean: true`),
+P("Integer arithmetic",r`public class Main {
+    public static void main(String[] args) {
+        int a = 17, b = 5;
+        System.out.println("Addition: " + (a + b));
+        System.out.println("Subtraction: " + (a - b));
+        System.out.println("Multiplication: " + (a * b));
+        System.out.println("Division: " + (a / b));
+        System.out.println("Modulus: " + (a % b));
+    }
+}`,`Addition: 22
+Subtraction: 12
+Multiplication: 85
+Division: 3
+Modulus: 2`),
+P("Floating-point arithmetic",r`public class Main {
+    public static void main(String[] args) {
+        double x = 7.5, y = 2.5;
+        System.out.println("Sum: " + (x + y));
+        System.out.println("Difference: " + (x - y));
+        System.out.println("Product: " + (x * y));
+        System.out.println("Quotient: " + (x / y));
+    }
+}`,`Sum: 10.0
+Difference: 5.0
+Product: 18.75
+Quotient: 3.0`),
+P("Character data type & ASCII",r`public class Main {
+    public static void main(String[] args) {
+        char ch = 'A';
+        System.out.println("Character: " + ch);
+        System.out.println("ASCII/Unicode value: " + (int) ch);
+    }
+}`,`Character: A
+ASCII/Unicode value: 65`),
+P("Boolean & relational operators",r`public class Main {
+    public static void main(String[] args) {
+        int a = 10, b = 20;
+        boolean t = true;
+        System.out.println("t = " + t);
+        System.out.println("a > b : " + (a > b));
+        System.out.println("a < b : " + (a < b));
+        System.out.println("a == b : " + (a == b));
+        System.out.println("a != b : " + (a != b));
+        System.out.println("a >= 10 : " + (a >= 10));
+    }
+}`,`t = true
+a > b : false
+a < b : true
+a == b : false
+a != b : true
+a >= 10 : true`),
+P("Declaring & initializing variables",r`public class Main {
+    public static void main(String[] args) {
+        String name = "Karthikeya";
+        int age = 19;
+        double cgpa = 8.7;
+        char section = 'B';
+        boolean passed = true;
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("CGPA: " + cgpa);
+        System.out.println("Section: " + section);
+        System.out.println("Passed: " + passed);
+    }
+}`,`Name: Karthikeya
+Age: 19
+CGPA: 8.7
+Section: B
+Passed: true`),
+P("Swap using a temporary variable",r`public class Main {
+    public static void main(String[] args) {
+        int a = 10, b = 20, temp;
+        System.out.println("Before: a=" + a + ", b=" + b);
+        temp = a; a = b; b = temp;
+        System.out.println("After: a=" + a + ", b=" + b);
+    }
+}`,`Before: a=10, b=20
+After: a=20, b=10`),
+P("Widening type conversion",r`public class Main {
+    public static void main(String[] args) {
+        int i = 100;
+        long l = i;
+        float f = l;
+        double d = f;
+        System.out.println("int: " + i);
+        System.out.println("long: " + l);
+        System.out.println("float: " + f);
+        System.out.println("double: " + d);
+    }
+}`,`int: 100
+long: 100
+float: 100.0
+double: 100.0`),
+P("Narrowing type casting",r`public class Main {
+    public static void main(String[] args) {
+        double d = 9.78;
+        int i = (int) d;
+        byte b = (byte) 300;
+        System.out.println("double: " + d);
+        System.out.println("int after cast: " + i);
+        System.out.println("byte after cast: " + b);
+    }
+}`,`double: 9.78
+int after cast: 9
+byte after cast: 44`),
+P("Character & ASCII conversion",r`public class Main {
+    public static void main(String[] args) {
+        char c = 'a';
+        int code = c;
+        char next = (char) (code + 1);
+        System.out.println(c + " -> " + code);
+        System.out.println(code + " + 1 -> " + next);
+        System.out.println(66 + " -> " + (char) 66);
+    }
+}`,`a -> 97
+97 + 1 -> b
+66 -> B`),
+P("Even or odd",r`public class Main {
+    public static void main(String[] args) {
+        int n = 27;
+        if (n % 2 == 0) System.out.println(n + " is Even");
+        else System.out.println(n + " is Odd");
+    }
+}`,"27 is Odd"),
+P("Largest of two numbers",r`public class Main {
+    public static void main(String[] args) {
+        int a = 45, b = 78;
+        int max = (a > b) ? a : b;
+        System.out.println("Largest = " + max);
+    }
+}`,"Largest = 78"),
+P("Reserved keywords",r`public class Main {
+    static final int LIMIT = 3;           // static, final
+    public static void main(String[] args) {
+        int x = 5;                        // int
+        if (x > 2) {                      // if
+            System.out.println("x is greater than 2");
+        } else {                          // else
+            System.out.println("x is small");
+        }
+        for (int i = 0; i < LIMIT; i++) { // for
+            System.out.println("Loop " + i);
+        }
+    }
+}
+// Keywords used: public, class, static, final, void, int, if, else, for`,`x is greater than 2
+Loop 0
+Loop 1
+Loop 2`),
+P("for loop — numbers 1 to 10",r`public class Main {
+    public static void main(String[] args) {
+        for (int i = 1; i <= 10; i++) {
+            System.out.print(i + " ");
+        }
+    }
+}`,"1 2 3 4 5 6 7 8 9 10 ")]},
+4:{name:"No Programs",sub:"No programming task was assigned this week",none:1},
+5:{name:"No Programs",sub:"No programming task was assigned this week",none:1},
+6:{name:"Classes & Objects",sub:"Constructors, GC, overloading, static, nested classes",progs:[
+P("Student Information System",r`class Student {
+    int id; String name; String branch;
+    void display() {
+        System.out.println("ID: " + id + ", Name: " + name + ", Branch: " + branch);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student();
+        s.id = 101; s.name = "Karthikeya"; s.branch = "AI&ML";
+        s.display();
+    }
+}`,"ID: 101, Name: Karthikeya, Branch: AI&ML"),
+P("Employee Information System",r`class Employee {
+    int id; String name; double salary;
+    void display() {
+        System.out.println("ID: " + id + ", Name: " + name + ", Salary: " + salary);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Employee e = new Employee();
+        e.id = 201; e.name = "Ravi"; e.salary = 45000;
+        e.display();
+    }
+}`,`ID: 201, Name: Ravi, Salary: 45000.0`),P("Book Details — Multiple Objects",r`class Book {
+    int id; String title, author;
+    Book(int id, String title, String author) {
+        this.id = id; this.title = title; this.author = author;
+    }
+    void show() { System.out.println("ID: " + id + ", Title: " + title + ", Author: " + author); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Book b1 = new Book(1, "Java Complete Reference", "Herbert Schildt");
+        Book b2 = new Book(2, "Head First Java", "Kathy Sierra");
+        Book b3 = new Book(3, "Effective Java", "Joshua Bloch");
+        b1.show(); b2.show(); b3.show();
+    }
+}`,`ID: 1, Title: Java Complete Reference, Author: Herbert Schildt
+ID: 2, Title: Head First Java, Author: Kathy Sierra
+ID: 3, Title: Effective Java, Author: Joshua Bloch`),P("Array of Student Objects",r`class Student {
+    int id; String name;
+    Student(int id, String name) { this.id = id; this.name = name; }
+}
+public class Main {
+    public static void main(String[] args) {
+        String[] names = {"Arun", "Bala", "Charan", "Deepak", "Esha"};
+        Student[] st = new Student[5];
+        for (int i = 0; i < 5; i++) st[i] = new Student(101 + i, names[i]);
+        for (Student s : st) System.out.println(s.id + " " + s.name);
+    }
+}`,`101 Arun
+102 Bala
+103 Charan
+104 Deepak
+105 Esha`),P("Reference Assignment",r`class Student { String name; }
+public class Main {
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        s1.name = "Arun";
+        Student s2 = s1;          // both refer to the same object
+        s2.name = "Varun";
+        System.out.println("s1.name = " + s1.name);
+        System.out.println("s2.name = " + s2.name);
+    }
+}`,`s1.name = Varun
+s2.name = Varun`),P("Comparing Object References",r`class Student { int id; }
+public class Main {
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        Student s2 = s1;
+        Student s3 = new Student();
+        System.out.println("s1 == s2 : " + (s1 == s2));
+        System.out.println("s1 == s3 : " + (s1 == s3));
+    }
+}`,`s1 == s2 : true
+s1 == s3 : false`),P("Calculator Using Methods",r`class Calculator {
+    int add(int a, int b) { return a + b; }
+    int sub(int a, int b) { return a - b; }
+    int mul(int a, int b) { return a * b; }
+    int div(int a, int b) { return a / b; }
+}
+public class Main {
+    public static void main(String[] args) {
+        Calculator c = new Calculator();
+        System.out.println("Add: " + c.add(20, 4));
+        System.out.println("Sub: " + c.sub(20, 4));
+        System.out.println("Mul: " + c.mul(20, 4));
+        System.out.println("Div: " + c.div(20, 4));
+    }
+}`,`Add: 24
+Sub: 16
+Mul: 80
+Div: 5`),
+P("Rectangle Operations",r`class Rectangle {
+    int length, width;
+    Rectangle(int l, int w) { length = l; width = w; }
+    int area() { return length * width; }
+    int perimeter() { return 2 * (length + width); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Rectangle r = new Rectangle(8, 5);
+        System.out.println("Area: " + r.area());
+        System.out.println("Perimeter: " + r.perimeter());
+    }
+}`,`Area: 40
+Perimeter: 26`),
+P("Student Constructors",r`class Student {
+    int id; String name;
+    Student() { id = 0; name = "Unknown"; }
+    Student(int id, String name) { this.id = id; this.name = name; }
+    void show() { System.out.println(id + " " + name); }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student().show();
+        new Student(101, "Karthikeya").show();
+    }
+}`,`0 Unknown
+101 Karthikeya`),P("Constructor Overloading",r`class Box {
+    int l, w, h;
+    Box() { l = w = h = 1; }
+    Box(int s) { l = w = h = s; }
+    Box(int l, int w, int h) { this.l = l; this.w = w; this.h = h; }
+    int volume() { return l * w * h; }
+}
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Volume 1: " + new Box().volume());
+        System.out.println("Volume 2: " + new Box(3).volume());
+        System.out.println("Volume 3: " + new Box(2, 3, 4).volume());
+    }
+}`,`Volume 1: 1
+Volume 2: 27
+Volume 3: 24`),P("Using this Keyword",r`class Student {
+    int id; String name;
+    Student(int id, String name) {
+        this.id = id;       // this.id = instance variable, id = parameter
+        this.name = name;
+    }
+    void show() { System.out.println("ID: " + this.id + ", Name: " + this.name); }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student(7, "Karthikeya").show();
+    }
+}`,`ID: 7, Name: Karthikeya`),P("Constructor Chaining",r`class Student {
+    int id; String name; String branch;
+    Student() { this(0); System.out.println("Default constructor"); }
+    Student(int id) { this(id, "NoName"); System.out.println("One-arg constructor"); }
+    Student(int id, String name) {
+        this.id = id; this.name = name; this.branch = "AI&ML";
+        System.out.println("Two-arg constructor");
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student();
+    }
+}`,`Two-arg constructor
+One-arg constructor
+Default constructor`),P("Demonstrating Garbage Collection",r`public class Main {
+    @Override
+    protected void finalize() { System.out.println("Object garbage collected"); }
+    public static void main(String[] args) throws InterruptedException {
+        Main m = new Main();
+        m = null;              // object now eligible for GC
+        System.gc();           // request garbage collection
+        Thread.sleep(500);
+        System.out.println("End of main");
+    }
+}`,`Object garbage collected
+End of main
+(GC timing is not guaranteed; the first line may not appear on every JVM)`),P("Object Eligibility for Garbage Collection",r`class Demo { String n; Demo(String n) { this.n = n; } }
+public class Main {
+    public static void main(String[] args) {
+        Demo d1 = new Demo("A");
+        d1 = null;                         // 1. reference set to null
+        Demo d2 = new Demo("B");
+        d2 = new Demo("C");                // 2. reference re-assigned (B eligible)
+        new Demo("D");                     // 3. anonymous object
+        System.out.println("A, B and D are eligible; C is still referenced: " + d2.n);
+        System.gc();
+    }
+}`,`A, B and D are eligible; C is still referenced: C`),P("Method Overloading",r`class Add {
+    int sum(int a, int b) { return a + b; }
+    int sum(int a, int b, int c) { return a + b + c; }
+    double sum(double a, double b) { return a + b; }
+}
+public class Main {
+    public static void main(String[] args) {
+        Add o = new Add();
+        System.out.println(o.sum(10, 20));
+        System.out.println(o.sum(10, 20, 30));
+        System.out.println(o.sum(1.5, 2.5));
+    }
+}`,`30
+60
+4.0`),P("Overloading Area Methods",r`class Area {
+    double area(double r) { return Math.PI * r * r; }   // circle
+    int area(int l, int b) { return l * b; }            // rectangle
+    int area(int s) { return s * s; }                   // square
+}
+public class Main {
+    public static void main(String[] args) {
+        Area a = new Area();
+        System.out.println("Circle: " + a.area(2.0));
+        System.out.println("Rectangle: " + a.area(6, 4));
+        System.out.println("Square: " + a.area(5));
+    }
+}`,`Circle: 12.566370614359172
+Rectangle: 24
+Square: 25`),P("Passing Student Object",r`class Student {
+    int id; String name;
+    Student(int id, String name) { this.id = id; this.name = name; }
+}
+public class Main {
+    static void display(Student s) {
+        System.out.println("ID: " + s.id + ", Name: " + s.name);
+    }
+    public static void main(String[] args) {
+        display(new Student(101, "Karthikeya"));
+    }
+}`,`ID: 101, Name: Karthikeya`),P("Comparing Employee Salaries",r`class Employee {
+    String name; double salary;
+    Employee(String n, double s) { name = n; salary = s; }
+}
+public class Main {
+    static void compare(Employee a, Employee b) {
+        Employee h = (a.salary > b.salary) ? a : b;
+        System.out.println("Higher salary: " + h.name + " (" + h.salary + ")");
+    }
+    public static void main(String[] args) {
+        compare(new Employee("Ravi", 45000), new Employee("Sita", 52000));
+    }
+}`,`Higher salary: Sita (52000.0)`),P("Returning a Student Object",r`class Student {
+    int id; String name;
+    Student(int id, String name) { this.id = id; this.name = name; }
+}
+public class Main {
+    static Student create() { return new Student(102, "Bala"); }
+    public static void main(String[] args) {
+        Student s = create();
+        System.out.println(s.id + " " + s.name);
+    }
+}`,`102 Bala`),P("Returning a Bank Account Object",r`class Account {
+    int no; double balance;
+    Account(int no, double balance) { this.no = no; this.balance = balance; }
+}
+public class Main {
+    static Account deposit(Account a, double amt) {
+        a.balance += amt;
+        return a;
+    }
+    public static void main(String[] args) {
+        Account acc = new Account(1001, 5000);
+        Account updated = deposit(acc, 500);
+        System.out.println("Account " + updated.no + " balance: " + updated.balance);
+    }
+}`,`Account 1001 balance: 5500.0`),P("Static Variable",r`class Student {
+    static int count = 0;
+    Student() { count++; }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student(); new Student(); new Student();
+        System.out.println("Total students: " + Student.count);
+    }
+}`,`Total students: 3`),P("Static Methods",r`public class Main {
+    static int square(int n) { return n * n; }
+    static int cube(int n) { return n * n * n; }
+    static int factorial(int n) { return n <= 1 ? 1 : n * factorial(n - 1); }
+    public static void main(String[] args) {
+        System.out.println("Square of 5: " + square(5));
+        System.out.println("Cube of 3: " + cube(3));
+        System.out.println("Factorial of 5: " + factorial(5));
+    }
+}`,`Square of 5: 25
+Cube of 3: 27
+Factorial of 5: 120`),P("Final Keyword",r`final class Base {                       // final class: cannot be extended
+    final int MAX = 100;                 // final variable: cannot change
+    final void show() { System.out.println("Final method, MAX = " + MAX); }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Base().show();
+        // class X extends Base {}  -> error: cannot inherit from final Base
+    }
+}`,`Final method, MAX = 100`),P("Blank Final Variable",r`class Student {
+    final int rollNo;                    // blank final
+    Student(int r) { rollNo = r; }
+}
+public class Main {
+    public static void main(String[] args) {
+        Student s = new Student(25094);
+        System.out.println("Roll No: " + s.rollNo);
+    }
+}`,`Roll No: 25094`),P("College and Department — Nested Class",r`class College {
+    String name = "ABC College";
+    static class Department {
+        void show() { System.out.println("Department: AI&ML"); }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        College.Department d = new College.Department();
+        d.show();
+    }
+}`,`Department: AI&ML`),P("Employee Address — Nested Class",r`class Employee {
+    String name = "Ravi";
+    static class Address {
+        String city = "Vijayawada", state = "Andhra Pradesh";
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Employee e = new Employee();
+        Employee.Address a = new Employee.Address();
+        System.out.println(e.name + " lives in " + a.city + ", " + a.state);
+    }
+}`,`Ravi lives in Vijayawada, Andhra Pradesh`),P("Student Address — Inner Class",r`class StudentAddressInner {
+    String name = "Karthikeya";
+    class Address {
+        String city = "Vijayawada";
+        void show() { System.out.println(name + " - " + city); }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        StudentAddressInner s = new StudentAddressInner();
+        StudentAddressInner.Address a = s.new Address();
+        a.show();
+    }
+}`,`Karthikeya - Vijayawada`),P("Library Management — Inner Class",r`class LibraryBookManager {
+    String library = "Central Library";
+    class Book {
+        int id; String title;
+        Book(int id, String title) { this.id = id; this.title = title; }
+        void show() { System.out.println(library + ": " + id + " - " + title); }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        LibraryBookManager m = new LibraryBookManager();
+        LibraryBookManager.Book b = m.new Book(1, "Effective Java");
+        b.show();
+    }
+}`,`Central Library: 1 - Effective Java`)]},
+7:{name:"Strings & Inheritance Intro",sub:"String classes, StringBuffer, StringTokenizer, super",progs:[P("String Constructors",r`public class Main {
+    public static void main(String[] args) {
+        String s1 = "Hello";                       // literal
+        String s2 = new String("Java");            // new keyword
+        char[] ch = {'J', 'a', 'v', 'a'};
+        String s3 = new String(ch);                // character array
+        byte[] b = {72, 101, 108, 108, 111};
+        String s4 = new String(b);                 // byte array
+        String s5 = new String();                  // empty string
+        System.out.println("Literal: " + s1);
+        System.out.println("new String(): " + s2);
+        System.out.println("Char array: " + s3);
+        System.out.println("Byte array: " + s4);
+        System.out.println("Empty string length: " + s5.length());
+    }
+}`,`Literal: Hello
+new String(): Java
+Char array: Java
+Byte array: Hello
+Empty string length: 0`),P("StringBuffer Class",r`public class Main {
+    public static void main(String[] args) {
+        StringBuffer sb = new StringBuffer("Hello");
+        sb.append(" World");       System.out.println("append  : " + sb);
+        sb.insert(5, ",");         System.out.println("insert  : " + sb);
+        sb.replace(0, 5, "Howdy"); System.out.println("replace : " + sb);
+        sb.delete(5, 6);           System.out.println("delete  : " + sb);
+        sb.reverse();              System.out.println("reverse : " + sb);
+    }
+}`,`append  : Hello World
+insert  : Hello, World
+replace : Howdy, World
+delete  : Howdy World
+reverse : dlroW ydwoH`),P("StringTokenizer Class",r`import java.util.StringTokenizer;
+public class Main {
+    public static void main(String[] args) {
+        StringTokenizer st = new StringTokenizer("Java is fun to learn");
+        System.out.println("Total tokens: " + st.countTokens());
+        while (st.hasMoreTokens()) System.out.println(st.nextToken());
+
+        StringTokenizer st2 = new StringTokenizer("apple,banana,cherry", ",");
+        System.out.println("Total tokens: " + st2.countTokens());
+        while (st2.hasMoreTokens()) System.out.println(st2.nextToken());
+    }
+}`,`Total tokens: 5
+Java
+is
+fun
+to
+learn
+Total tokens: 3
+apple
+banana
+cherry`),P("Basic Inheritance",r`class Animal {
+    void eat() { System.out.println("Eating..."); }
+}
+class Dog extends Animal {
+    void bark() { System.out.println("Barking..."); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Dog d = new Dog();
+        d.eat();    // inherited from Animal
+        d.bark();
+    }
+}`,`Eating...
+Barking...`),P("Using super Keyword",r`class Parent {
+    int x = 10;
+    void show() { System.out.println("Parent method"); }
+}
+class Child extends Parent {
+    int x = 20;
+    void display() {
+        System.out.println("Child x = " + x);
+        System.out.println("Parent x = " + super.x);
+        super.show();
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Child().display();
+    }
+}`,`Child x = 20
+Parent x = 10
+Parent method`)]},
+8:{name:"Inheritance",sub:"Single, multilevel, overriding, dynamic dispatch",progs:[P("Single Inheritance",r`class Person {
+    String name; int age;
+    Person(String n, int a) { name = n; age = a; }
+}
+class Student extends Person {
+    String roll;
+    Student(String n, int a, String r) { super(n, a); roll = r; }
+    void display() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("Roll No: " + roll);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student("Karthikeya", 19, "25EU02094").display();
+    }
+}`,`Name: Karthikeya
+Age: 19
+Roll No: 25EU02094`),P("Using super Keyword",r`class Person {
+    String name = "Person";
+    void show() { System.out.println("Person's show()"); }
+}
+class Student extends Person {
+    String name = "Student";
+    void print() {
+        System.out.println(name);
+        System.out.println(super.name);
+        super.show();
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student().print();
+    }
+}`,`Student
+Person
+Person's show()`),P("Multilevel Inheritance",r`class Person {
+    void showName() { System.out.println("Person: Ravi"); }
+}
+class Employee extends Person {
+    void showId() { System.out.println("Employee ID: 501"); }
+}
+class Manager extends Employee {
+    void showDept() { System.out.println("Manager of: Sales"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Manager m = new Manager();
+        m.showName(); m.showId(); m.showDept();
+    }
+}`,`Person: Ravi
+Employee ID: 501
+Manager of: Sales`),P("Method Overriding",r`class Animal {
+    void sound() { System.out.println("Animal makes sound"); }
+}
+class Dog extends Animal {
+    @Override void sound() { System.out.println("Dog barks"); }
+}
+class Cat extends Animal {
+    @Override void sound() { System.out.println("Cat meows"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Animal().sound();
+        new Dog().sound();
+        new Cat().sound();
+    }
+}`,`Animal makes sound
+Dog barks
+Cat meows`),P("Dynamic Method Dispatch — Shapes",r`class Shape { double area() { return 0; } }
+class Circle extends Shape {
+    double r; Circle(double r) { this.r = r; }
+    double area() { return Math.PI * r * r; }
+}
+class Rectangle extends Shape {
+    double l, b; Rectangle(double l, double b) { this.l = l; this.b = b; }
+    double area() { return l * b; }
+}
+class Triangle extends Shape {
+    double b, h; Triangle(double b, double h) { this.b = b; this.h = h; }
+    double area() { return 0.5 * b * h; }
+}
+public class Main {
+    public static void main(String[] args) {
+        Shape[] shapes = { new Circle(2), new Rectangle(5, 4), new Triangle(6, 4) };
+        for (Shape s : shapes)
+            System.out.println(s.getClass().getSimpleName() + " area: " + s.area());
+    }
+}`,`Circle area: 12.566370614359172
+Rectangle area: 20.0
+Triangle area: 12.0`),P("super with Method Overriding",r`class Person {
+    String name = "Karthikeya";
+    void display() { System.out.println("Name: " + name); }
+}
+class Student extends Person {
+    String roll = "25EU02094";
+    @Override void display() {
+        super.display();                       // superclass version first
+        System.out.println("Roll No: " + roll);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Student().display();
+    }
+}`,`Name: Karthikeya
+Roll No: 25EU02094`),P("Multilevel Inheritance — Salary",r`class Employee { double basic = 30000; }
+class Developer extends Employee { double bonus = 10000; }
+class SeniorDeveloper extends Developer {
+    double allowance = 5000;
+    double total() { return basic + bonus + allowance; }
+}
+public class Main {
+    public static void main(String[] args) {
+        SeniorDeveloper s = new SeniorDeveloper();
+        System.out.println("Total salary: " + s.total());
+    }
+}`,`Total salary: 45000.0`),P("Dynamic Dispatch — Bank Accounts",r`class BankAccount {
+    double balance = 10000;
+    double interest() { return 0; }
+}
+class SavingsAccount extends BankAccount {
+    double interest() { return balance * 4 / 100; }
+}
+class CurrentAccount extends BankAccount {
+    double interest() { return balance * 1 / 100; }
+}
+public class Main {
+    public static void main(String[] args) {
+        BankAccount acc;
+        acc = new SavingsAccount();
+        System.out.println("Savings interest: " + acc.interest());
+        acc = new CurrentAccount();
+        System.out.println("Current interest: " + acc.interest());
+    }
+}`,`Savings interest: 400.0
+Current interest: 100.0`),P("Constructor Execution Order",r`class A { A() { System.out.println("A constructor"); } }
+class B extends A { B() { System.out.println("B constructor"); } }
+class C extends B { C() { System.out.println("C constructor"); } }
+public class Main {
+    public static void main(String[] args) {
+        new C();
+    }
+}`,`A constructor
+B constructor
+C constructor`),P("Banking Application Using Inheritance",r`class Account {
+    int no; double balance;
+    Account(int no, double balance) { this.no = no; this.balance = balance; }
+    void deposit(double amt) { balance += amt; }
+    void withdraw(double amt) {
+        if (amt <= balance) balance -= amt;
+        else System.out.println("Insufficient balance");
+    }
+    void show() { System.out.println("Account " + no + " | Balance: " + balance); }
+}
+class SavingsAccount extends Account {
+    double rate;
+    SavingsAccount(int no, double bal, double rate) { super(no, bal); this.rate = rate; }
+    double interest() { return balance * rate / 100; }
+}
+public class Main {
+    public static void main(String[] args) {
+        SavingsAccount s = new SavingsAccount(1001, 5000, 5);
+        s.show();
+        s.deposit(2000); System.out.print("After deposit  -> "); s.show();
+        s.withdraw(500); System.out.print("After withdraw -> "); s.show();
+        System.out.println("Interest (5%): " + s.interest());
+    }
+}`,`Account 1001 | Balance: 5000.0
+After deposit  -> Account 1001 | Balance: 7000.0
+After withdraw -> Account 1001 | Balance: 6500.0
+Interest (5%): 325.0`)]},
+9:{name:"Packages & Interfaces",sub:"Packages, CLASSPATH, interfaces",progs:[P("Creating a User-Defined Package",r`// File: mypackage/Student.java
+package mypackage;
+public class Student {
+    public void show() { System.out.println("Student: Karthikeya, Roll: 25EU02094"); }
+}
+
+// File: Main.java  (outside the package)
+import mypackage.Student;
+public class Main {
+    public static void main(String[] args) {
+        new Student().show();
+    }
+}
+
+// Compile & run:
+//   javac mypackage/Student.java
+//   javac Main.java
+//   java Main`,`Student: Karthikeya, Roll: 25EU02094`),P("Importing Packages",r`// File: college/Student.java
+package college;
+public class Student { public void show() { System.out.println("Student class"); } }
+
+// File: college/Faculty.java
+package college;
+public class Faculty { public void show() { System.out.println("Faculty class"); } }
+
+// File: Main.java
+import college.Student;      // specific import
+import college.*;            // wildcard import (Faculty comes from here)
+public class Main {
+    public static void main(String[] args) {
+        new Student().show();
+        new Faculty().show();
+        new college.Student().show();   // fully qualified name
+    }
+}`,`Student class
+Faculty class
+Student class`),P("Packages and Member Access",r`// File: p1/A.java
+package p1;
+public class A {
+    public int pub = 1; private int pri = 2; protected int pro = 3; int def = 4;
+    public void showAll() {
+        System.out.println("Same class: public=" + pub + " private=" + pri + " protected=" + pro + " default=" + def);
+    }
+}
+
+// File: p1/B.java  (same package)
+package p1;
+public class B {
+    public void test() {
+        A a = new A();
+        System.out.println("Same package: public=" + a.pub + " protected=" + a.pro + " default=" + a.def);
+        // a.pri -> error: private
+    }
+}
+
+// File: p2/C.java  (different package)
+package p2;
+import p1.*;
+public class C {
+    public static void main(String[] args) {
+        new A().showAll();
+        new B().test();
+        A a = new A();
+        System.out.println("Different package: public=" + a.pub);
+        // a.pro, a.def, a.pri -> errors outside p1 (protected only via subclass)
+    }
+}
+
+// javac p1/*.java p2/C.java   then   java p2.C`,`Same class: public=1 private=2 protected=3 default=4
+Same package: public=1 protected=3 default=4
+Different package: public=1`),P("Demonstrate CLASSPATH",r`// File: utilities/Calculator.java
+package utilities;
+public class Calculator {
+    public int add(int a, int b) { return a + b; }
+    public int mul(int a, int b) { return a * b; }
+}
+
+// File: Main.java
+import utilities.Calculator;
+public class Main {
+    public static void main(String[] args) {
+        Calculator c = new Calculator();
+        System.out.println("Sum: " + c.add(10, 20));
+        System.out.println("Product: " + c.mul(10, 20));
+    }
+}
+
+// Commands (Windows):
+//   javac -d C:\javalib utilities\Calculator.java
+//   set CLASSPATH=C:\javalib;.
+//   javac Main.java
+//   java Main`,`Sum: 30
+Product: 200`),P("Package with Multiple Classes",r`// File: bank/Account.java
+package bank;
+public class Account {
+    public int no = 1001; public double balance = 5000;
+}
+
+// File: bank/Customer.java
+package bank;
+public class Customer {
+    public String name = "Karthikeya";
+}
+
+// File: bank/Transaction.java
+package bank;
+public class Transaction {
+    public void deposit(Account a, double amt) { a.balance += amt; }
+}
+
+// File: Main.java
+import bank.*;
+public class Main {
+    public static void main(String[] args) {
+        Account a = new Account();
+        Customer c = new Customer();
+        new Transaction().deposit(a, 1500);
+        System.out.println("Customer: " + c.name);
+        System.out.println("Account " + a.no + " balance: " + a.balance);
+    }
+}`,`Customer: Karthikeya
+Account 1001 balance: 6500.0`),P("Defining & Implementing an Interface",r`interface Shape {
+    double area();
+}
+class Circle implements Shape {
+    double r = 2;
+    public double area() { return Math.PI * r * r; }
+}
+class Rectangle implements Shape {
+    double l = 5, b = 4;
+    public double area() { return l * b; }
+}
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Circle area: " + new Circle().area());
+        System.out.println("Rectangle area: " + new Rectangle().area());
+    }
+}`,`Circle area: 12.566370614359172
+Rectangle area: 20.0`),P("Implementing Multiple Interfaces",r`interface Printable { void print(); }
+interface Showable { void show(); }
+class Demo implements Printable, Showable {
+    public void print() { System.out.println("Printing..."); }
+    public void show() { System.out.println("Showing..."); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Demo d = new Demo();
+        d.print();
+        d.show();
+    }
+}`,`Printing...
+Showing...`),P("Interface-Based Polymorphism",r`interface Vehicle { void start(); }
+class Car implements Vehicle {
+    public void start() { System.out.println("Car starts with a key"); }
+}
+class Bike implements Vehicle {
+    public void start() { System.out.println("Bike starts with a kick"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Vehicle v;
+        v = new Car();  v.start();
+        v = new Bike(); v.start();
+    }
+}`,`Car starts with a key
+Bike starts with a kick`),P("Variables in Interfaces",r`interface Constants {
+    int MAX_MARKS = 100;          // public static final by default
+    double PI = 3.14;
+}
+class Test implements Constants {
+    void show() {
+        System.out.println("MAX_MARKS = " + MAX_MARKS);
+        System.out.println("PI = " + PI);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        new Test().show();
+        System.out.println("Direct access: " + Constants.MAX_MARKS);
+    }
+}`,`MAX_MARKS = 100
+PI = 3.14
+Direct access: 100`),P("Nested Interfaces",r`class University {
+    interface Department {
+        void show();
+    }
+}
+class AIML implements University.Department {
+    public void show() { System.out.println("Department of AI&ML"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        University.Department d = new AIML();
+        d.show();
+    }
+}`,`Department of AI&ML`),P("Interface Inheritance",r`interface Animal { void eat(); }
+interface Dog extends Animal { void bark(); }
+class Labrador implements Dog {
+    public void eat() { System.out.println("Labrador eats"); }
+    public void bark() { System.out.println("Labrador barks"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Labrador l = new Labrador();
+        l.eat();
+        l.bark();
+    }
+}`,`Labrador eats
+Labrador barks`),P("Real-World Application Using Interfaces",r`interface Payment {
+    void pay(double amount);
+}
+class CreditCard implements Payment {
+    public void pay(double amount) { System.out.println("Paid " + amount + " using Credit Card"); }
+}
+class UPI implements Payment {
+    public void pay(double amount) { System.out.println("Paid " + amount + " using UPI"); }
+}
+public class Main {
+    public static void main(String[] args) {
+        Payment p = new CreditCard(); p.pay(2500);
+        p = new UPI();                p.pay(1200);
+    }
+}`,`Paid 2500.0 using Credit Card
+Paid 1200.0 using UPI`)]}
+};
+const app=document.getElementById("app");
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const num=n=>String(n).padStart(2,"0");
+function home(){
+ app.innerHTML=`<section class="hero"><div><p class="crumb">JAVA PROGRAMMING · LAB NOTEBOOK</p>
+ <h1>Code. Compile. <em>Repeat.</em></h1><p>Every week's programs, source code and console output — collected in one place. Pick a week to start exploring.</p></div>
+ <div class="id"><img src="data:image/jpeg;base64,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" alt="Profile" onerror="this.removeAttribute('src')"><h3>M. Karthikeya</h3>
+ <table><tr><td>Roll No</td><td>25EU02094</td></tr><tr><td>Year</td><td>II</td></tr><tr><td>Branch</td><td>AI&amp;ML</td></tr><tr><td>Section</td><td>B</td></tr><tr><td>Subject</td><td>Java Programming</td></tr></table></div></section>
+ <h2>Weekly Index</h2><div class="grid">${Object.keys(W).map(k=>`<a class="wk" href="#/w/${k}"><small>WEEK</small><b>${num(k)}</b><small>${W[k].name}</small></a>`).join("")}</div>`;
+}
+function week(k){
+ const w=W[k];if(!w)return home();
+ let h=`<p class="crumb"><a href="#/">Home</a> / Week ${k}</p><h1>Week ${k}: ${w.name}</h1><p class="pend">${w.sub}</p>`;
+ if(w.none)h+=`<p>📭 No programming task was assigned this week.</p>`;
+ if(w.table){h+=`<table class="cmp"><tr>${w.table.h.map(x=>`<th>${x}</th>`).join("")}</tr>${w.table.r.map(r=>`<tr>${r.map((x,i)=>i?`<td>${x}</td>`:`<th>${x}</th>`).join("")}</tr>`).join("")}</table>`}
+ if(w.steps)w.steps.forEach(s=>h+=`<h2>${s[0]}</h2><ol>${s[1].map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`);
+ if(w.progs)h+=`<div class="plist">${w.progs.map((p,i)=>`<a href="#/w/${k}/${i+1}"><i>${num(i+1)}</i><span>${p.t}${p.c?"":' <small class="pend">(code pending)</small>'}</span></a>`).join("")}</div>`;
+ app.innerHTML=h;
+}
+function prog(k,n){
+ const w=W[k],p=w&&w.progs&&w.progs[n-1];if(!p)return home();
+ let h=`<p class="crumb"><a href="#/">Home</a> / <a href="#/w/${k}">Week ${k}</a> / Program ${n}</p><h1>Program ${num(n)}</h1><p><b>Aim:</b> ${p.t}</p>`;
+ h+=p.c?`<div class="lbl">SOURCE CODE</div><pre>${esc(p.c)}</pre><div class="lbl">OUTPUT</div><pre class="out">${esc(p.o)}</pre>`:`<p class="pend">Code and output for this program will be added soon.</p>`;
+ h+=`<div class="nav">${n>1?`<a href="#/w/${k}/${n-1}">← Previous</a>`:`<span></span>`}${n<w.progs.length?`<a href="#/w/${k}/${+n+1}">Next →</a>`:`<a href="#/w/${k}">All programs</a>`}</div>`;
+ app.innerHTML=h;
+}
+function route(){const p=location.hash.split("/");window.scrollTo(0,0);
+ if(p[1]==="w"&&p[3])prog(p[2],+p[3]);else if(p[1]==="w")week(p[2]);else home();}
+addEventListener("hashchange",route);route();
+</script></body></html>
